@@ -1,7 +1,6 @@
 <!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>E-Kos — Ekosistem Platform Kos Makassar</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
 <style>
 :root{--bg:#F4F3EC;--cd:#fff;--ink:#26301F;--mu:#5F6A58;--ln:#E2E4D6;--g:#4E6B47;--g2:#B9C9AA;--gt:#fff;--sf:#E6ECDD;--wr:#EFE6D8;--wt:#6E5233;--ea:#A98B68;--dg:#A23B2A;--gold:#D4AF37;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -59,20 +58,8 @@ svg text{fill:var(--mu);font-size:10px;font-family:inherit}.lg{display:flex;gap:
 .ph-box{background:linear-gradient(135deg,var(--sf),var(--wr));display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:11px;color:var(--mu);text-align:center;padding:4px}
 .room-box{border:1px solid var(--ln);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:6px;background:var(--sf)}
 .btn-export{background:#1D6F42;color:#fff;border-color:#1D6F42}
-</style></head><body><div id="app">
-<div style="min-height:85vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;font-family:'Plus Jakarta Sans',sans-serif">
-  <div style="width:34px;height:34px;border:3px solid #E2E4D6;border-top-color:#4E6B47;border-radius:50%;animation:sp .7s linear infinite"></div>
-  <p style="font-size:13px;font-weight:700;color:#4E6B47;margin:0">Memuat E-Kos Makassar...</p>
-</div>
-</div><div id="tt"></div><div id="modal-root"></div>
+</style></head><body><div id="app"></div><div id="tt"></div><div id="modal-root"></div>
 <script>
-window.onerror = function(msg, url, line) {
-  console.error('E-Kos error:', msg, url, line);
-  const a = document.getElementById('app');
-  if (a && a.innerHTML.includes('Memuat E-Kos')) {
-    a.innerHTML = '<main style="padding:40px 20px;text-align:center"><h3 style="color:#A23B2A">Gagal Memuat Halaman</h3><p class="t" style="margin:8px 0 16px">' + (msg || 'Terjadi kendala saat memuat berkas.') + '</p><button onclick="location.reload()">Muat Ulang Halaman</button></main>';
-  }
-};
 
 const LOGO = "data:image/png;base64,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
 const ic = d => `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
@@ -3595,9 +3582,5 @@ function render() {
   if (pg == 'cht') scrollTo(0, document.body.scrollHeight);
 }
 
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', render);
-} else {
-  render();
-}
+render();
 </script></body></html>
